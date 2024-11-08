@@ -1,17 +1,19 @@
 // firebaseConfig.js
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_AUTH_DOMAIN",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_STORAGE_BUCKET",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID",
+  apiKey: "AIzaSyDSS8ZVUPeoiGXTdOMdjdYaDHZ9YoqS9TI",
+  authDomain: "gerenciamentodetarefas-b1812.firebaseapp.com",
+  projectId: "gerenciamentodetarefas-b1812",
+  storageBucket: "gerenciamentodetarefas-b1812.firebasestorage.app",
+  messagingSenderId: "32955577094",
+  appId: "1:32955577094:web:8ba8a37a9bbe2fd853a487",
 };
 
 const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+const firestore = getFirestore(app);
+const auth = getAuth(app);
 
-export { db };
+export { firestore, auth };
