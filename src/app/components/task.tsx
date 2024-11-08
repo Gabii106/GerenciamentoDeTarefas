@@ -1,8 +1,9 @@
 "use client";
 import { useState, useEffect } from "react";
 import Subtask from "./subtask";
-import { db } from "../connection/firebaseConfig";
+//import { firestore } from "../connection/firebaseConfig";
 import { doc, updateDoc, setDoc, arrayUnion, deleteField } from "firebase/firestore";
+import { firestore } from "../connection/firebaseConfig";
 
 // Interface para Subtask
 interface SubtaskType {
@@ -31,20 +32,20 @@ export default function Task({ title, taskId, subtasks }: TaskProps) {
 
   // Salva o progresso da tarefa no Firestore
   const saveTaskProgress = async (newProgress : number) => {
-    const taskRef = doc(db, "tasks", taskId);
+    const taskRef = doc(firestore, "tasks", taskId);
     await updateDoc(taskRef, { progress: newProgress });
   };
 
   // Função para salvar uma edição de subtask
   const editSubtask = async (index: number, newLabel: string) => {
-    const taskRef = doc(db, "tasks", taskId);
+    const taskRef = doc(firestore, "tasks", taskId);
     const updatedTasks = subtasks.map((subtask, idx) => idx === index ? { ...subtask, label: newLabel } : subtask);
     await updateDoc(taskRef, { subtasks: updatedTasks });
   };
 
   // Função para deletar uma subtask
   const deleteSubtask = async (index: number) => {
-    const taskRef = doc(db, "tasks", taskId);
+    const taskRef = doc(firestore, "tasks", taskId);
     const updatedTasks = subtasks.filter((_, idx) => idx !== index);
     await updateDoc(taskRef, { subtasks: updatedTasks });
     updateProgress(false); // Atualiza o progresso após a exclusão

@@ -2,9 +2,9 @@
 import Navbar from './components/navbar';
 import TaskManager from './components/taskmanager';
 import { useState, useEffect } from 'react';
-import { db } from './connection/firebaseConfig';
 import { collection, addDoc, getDocs, DocumentData } from "firebase/firestore";
 import TaskForm from './components/taskform';
+import { firestore } from './connection/firebaseConfig';
 
 interface SubtaskType {
   label: string;
@@ -23,7 +23,7 @@ export default function Home() {
 
   const fetchTasks = async () => {
     try {
-      const tasksCollection = collection(db, "tasks");
+      const tasksCollection = collection(firestore, "tasks");
       const taskSnapshot = await getDocs(tasksCollection);
       const taskList = taskSnapshot.docs.map((doc: DocumentData) => ({
         taskId: doc.id,
@@ -43,7 +43,7 @@ export default function Home() {
         title,
         subtasks: subtasks.map(label => ({ label, isChecked: false })),
       };
-      const taskDoc = await addDoc(collection(db, "tasks"), newTask);
+      const taskDoc = await addDoc(collection(firestore, "tasks"), newTask);
       setTasks((prevTasks) => [
         ...prevTasks, 
         { ...newTask, taskId: taskDoc.id }
