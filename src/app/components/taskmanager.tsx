@@ -1,10 +1,35 @@
-import Task from './task';
+"use client";
+import Task from "./task";
 
-export default function TaskManager() {
+// Interface para Subtask
+interface SubtaskType {
+  label: string;
+  isChecked: boolean;
+}
+
+// Interface para uma Tarefa
+interface TaskType {
+  title: string;
+  taskId: string;
+  subtasks: SubtaskType[];
+}
+
+// Interface para as props do TaskManager
+interface TaskManagerProps {
+  tasks: TaskType[];
+}
+
+export default function TaskManager({ tasks }: TaskManagerProps) {
   return (
     <div className="w-full max-w-lg p-4">
-      <Task title="Dar banho no cachorro" tasks={['Lavar o pelo', 'Secar o pelo', 'Limpar orelhas', 'Passar perfume']} />
-      <Task title="Lista de Compras" tasks={['Feijão', 'Macarrão', 'Arroz', 'Óleo']} />
+      {tasks.map((task) => (
+        <Task
+          key={task.taskId}
+          title={task.title}
+          taskId={task.taskId}
+          subtasks={task.subtasks}
+        />
+      ))}
     </div>
   );
 }
