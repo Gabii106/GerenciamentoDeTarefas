@@ -1,8 +1,8 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState/*, useEffect */} from "react";
 import Subtask from "./subtask";
 //import { firestore } from "../connection/firebaseConfig";
-import { doc, updateDoc, setDoc, arrayUnion, deleteField } from "firebase/firestore";
+import { doc, updateDoc/*, setDoc, arrayUnion, deleteField */} from "firebase/firestore";
 import { firestore } from "../connection/firebaseConfig";
 
 // Interface para Subtask
