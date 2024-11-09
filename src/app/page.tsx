@@ -1,12 +1,13 @@
 "use client";
 import Navbar from './components/navbar';
 import TaskManager from './components/taskmanager';
+import TaskForm from './components/taskform';
 import { useState, useEffect } from 'react';
 import { collection, addDoc, getDocs, DocumentData } from "firebase/firestore";
-import TaskForm from './components/taskform';
 import { firestore } from './connection/firebaseConfig';
 import { useAuth } from './hooks/userAuth';
 import { redirect } from 'next/navigation';
+import { query, where } from "firebase/firestore";
 
 interface SubtaskType {
   label: string;
@@ -33,14 +34,18 @@ export default function Home() {
 
   const fetchTasks = async () => {
     try {
+      if (!user) return; // Verifica se o usuário está logado
+  
       const tasksCollection = collection(firestore, "tasks");
-      const taskSnapshot = await getDocs(tasksCollection);
+      const q = query(tasksCollection, where("userId", "==", user.uid)); // Filtra pelo ID do usuário
+  
+      const taskSnapshot = await getDocs(q);
       const taskList = taskSnapshot.docs.map((doc: DocumentData) => ({
         taskId: doc.id,
         title: doc.data().title,
-        subtasks: doc.data().subtasks || []
+        subtasks: doc.data().subtasks || [],
       })) as TaskType[];
-
+  
       setTasks(taskList);
     } catch (error) {
       console.error("Erro ao buscar tarefas do Firestore:", error);
