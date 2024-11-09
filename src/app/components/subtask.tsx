@@ -12,6 +12,11 @@ interface SubtaskProps {
   index: number;
 }
 
+interface SubtaskType {
+  label: string;
+  isChecked: boolean;
+}
+
 export default function Subtask({
   label,
   isChecked,
@@ -38,7 +43,7 @@ export default function Subtask({
       if (taskSnap.exists()) {
         // Atualizar o estado da subtask
         const subtasks = taskSnap.data()?.subtasks || [];
-        const updatedSubtasks = subtasks.map((subtask: any, idx: number) =>
+        const updatedSubtasks = subtasks.map((subtask: SubtaskType, idx: number) =>
           idx === index ? { ...subtask, isChecked: newChecked } : subtask
         );
 
