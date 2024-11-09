@@ -5,8 +5,6 @@ import { useState, useEffect } from 'react';
 import { collection, addDoc, getDocs, DocumentData } from "firebase/firestore";
 import TaskForm from './components/taskform';
 import { firestore } from './connection/firebaseConfig';
-/*import { useAuth } from './hooks/userAuth';
-import { useRouter } from 'next/navigation';*/
 
 interface SubtaskType {
   label: string;
