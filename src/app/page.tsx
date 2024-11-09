@@ -5,6 +5,8 @@ import { useState, useEffect } from 'react';
 import { collection, addDoc, getDocs, DocumentData } from "firebase/firestore";
 import TaskForm from './components/taskform';
 import { firestore } from './connection/firebaseConfig';
+import { useAuth } from './hooks/userAuth';
+import { useRouter } from 'next/navigation';
 
 interface SubtaskType {
   label: string;
@@ -18,8 +20,14 @@ interface TaskType {
 }
 
 export default function Home() {
+  //const { user } = useAuth();
   const [tasks, setTasks] = useState<TaskType[]>([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
+  //const router = useRouter();
+
+  /*if(!user){
+    router.push('/login');
+  }*/
 
   const fetchTasks = async () => {
     try {

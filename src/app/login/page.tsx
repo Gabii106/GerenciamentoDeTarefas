@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { auth } from "../connection/firebaseConfig";
 import { signInWithEmailAndPassword } from "firebase/auth";
-//import { signIn } from 'next-auth/react';
+import { signIn } from 'next-auth/react';
 //import { FaGithub } from 'react-icons/fa';
 
 export default function Login() {
@@ -27,14 +27,15 @@ export default function Login() {
         }
     }
 
-    /*const handleGithubLogin = async () => {
+    const handleGithubLogin = async () => {
         const result = await signIn('github', { redirect: false });
         if (result?.error) {
             setError(result.error);
         } else {
-            router.push('/profiles/cadastrar'); // Redireciona após o login com GitHub
+            console.log("Red Home");
+            router.push('/'); // Redireciona após o login com GitHub
         }
-    };*/
+    };
 
 
     return (
@@ -58,6 +59,13 @@ export default function Login() {
                     <button type="submit" className="w-full my-6 bg-blue-300 text-white p-3 rounded">Entrar</button>
                 </form>
             </div>
+            <div>
+                <button onClick={handleGithubLogin}
+                className="flex bg-gray-900 text-white p-2 rounded hover:bg-gray-700 transition duration-200">
+                    Login com Github
+                </button>
+            </div>
+            
             
         </>
     );
