@@ -5,6 +5,8 @@ import { useState, useEffect } from 'react';
 import { collection, addDoc, getDocs, DocumentData } from "firebase/firestore";
 import TaskForm from './components/taskform';
 import { firestore } from './connection/firebaseConfig';
+import { useAuth } from './hooks/userAuth';
+import { redirect } from 'next/navigation';
 
 interface SubtaskType {
   label: string;
@@ -18,14 +20,16 @@ interface TaskType {
 }
 
 export default function Home() {
-  //const { user } = useAuth();
+  const { user, loading } = useAuth();
   const [tasks, setTasks] = useState<TaskType[]>([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
-  //const router = useRouter();
 
-  /*if(!user){
-    router.push('/login');
-  }*/
+  // Redireciona se o usuário não estiver logado
+  useEffect(() => {
+    if (!loading && !user) {
+      redirect('/login');
+    }
+  }, [user, loading]);
 
   const fetchTasks = async () => {
     try {
@@ -60,8 +64,10 @@ export default function Home() {
   };
 
   useEffect(() => {
-    fetchTasks();
-  }, []);
+    if (user) {
+      fetchTasks();
+    }
+  }, [user]);
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col">
