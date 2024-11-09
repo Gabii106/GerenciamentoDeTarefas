@@ -1,7 +1,7 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Subtask from "./subtask";
-import { doc, updateDoc, deleteDoc } from "firebase/firestore";
+import { doc, updateDoc, deleteDoc, getDoc } from "firebase/firestore";
 import { firestore } from "../connection/firebaseConfig";
 
 // Interface para Subtask
@@ -18,25 +18,41 @@ interface TaskProps {
   fetchTasks: () => void; // Função para recarregar as tarefas
 }
 
-export default function Task({ title, taskId, subtasks, fetchTasks }: TaskProps) {
+export default function Task({
+  title,
+  taskId,
+  subtasks,
+  fetchTasks,
+}: TaskProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [progress, setProgress] = useState(0);
   const [newSubtask, setNewSubtask] = useState(""); // Campo para adicionar nova subtask
   const [localSubtasks, setLocalSubtasks] = useState<SubtaskType[]>(subtasks); // Subtasks locais para evitar reload imediato
+  
+  useEffect(() => {
+    setLocalSubtasks(subtasks);
+  }, [subtasks]);
 
-  // Função para calcular o progresso com base nas subtarefas
-  const updateProgress = (isChecked: boolean) => {
-    const completedCount = localSubtasks.filter((subtask) => subtask.isChecked || subtask.isChecked === isChecked).length;
-    const newProgress = Math.round((completedCount / localSubtasks.length) * 100);
-    setProgress(newProgress);
-    saveTaskProgress(newProgress);
+  // Função para buscar as subtasks atualizadas do Firestore
+  const fetchUpdatedSubtasks = async () => {
+    try {
+      const taskRef = doc(firestore, "tasks", taskId);
+      const taskSnap = await getDoc(taskRef);
+
+      if (taskSnap.exists()) {
+        const data = taskSnap.data();
+        setLocalSubtasks(data.subtasks || []);
+      } else {
+        console.error("Documento não encontrado!");
+      }
+    } catch (error) {
+      console.error("Erro ao buscar subtasks:", error);
+    }
   };
 
-  // Salva o progresso da tarefa no Firestore
-  const saveTaskProgress = async (newProgress: number) => {
-    const taskRef = doc(firestore, "tasks", taskId);
-    await updateDoc(taskRef, { progress: newProgress });
-  };
+  // useEffect para buscar subtasks atualizadas ao abrir o componente
+  useEffect(() => {
+    fetchUpdatedSubtasks();
+  }, [isOpen, subtasks]);
 
   // Função para adicionar uma nova subtask
   const addSubtask = async () => {
@@ -88,7 +104,6 @@ export default function Task({ title, taskId, subtasks, fetchTasks }: TaskProps)
       const taskRef = doc(firestore, "tasks", taskId);
       await updateDoc(taskRef, { subtasks: updatedSubtasks });
       setLocalSubtasks(updatedSubtasks);
-      updateProgress(false);
       fetchTasks();
     } catch (error) {
       console.error("Erro ao deletar subtask:", error);
@@ -124,17 +139,10 @@ export default function Task({ title, taskId, subtasks, fetchTasks }: TaskProps)
     <div className="bg-white rounded-lg p-4 shadow-md mb-4 w-full">
       <div className="flex justify-between items-center cursor-pointer pb-2 border-b-2">
         <div
-          className={`flex justify-between w-full ${
-            progress === 100
-              ? "text-green-500"
-              : progress > 0
-              ? "text-yellow-500"
-              : "text-gray-500"
-          }`}
+          className={`flex justify-between w-full`}
           onClick={() => setIsOpen(!isOpen)}
         >
           <span>{title}</span>
-          <span>{progress}%</span>
         </div>
         <div className="flex items-center space-x-2">
           <button
@@ -177,9 +185,15 @@ export default function Task({ title, taskId, subtasks, fetchTasks }: TaskProps)
               key={index}
               label={subtask.label}
               isChecked={subtask.isChecked}
-              updateProgress={() => updateProgress(subtask.isChecked)}
-              onEdit={() => editSubtask(index, prompt("Editar Subtask", subtask.label) || subtask.label)}
+              onEdit={() =>
+                editSubtask(
+                  index,
+                  prompt("Editar Subtask", subtask.label) || subtask.label
+                )
+              }
               onDelete={() => deleteSubtask(index)}
+              taskId={taskId} // Passando o taskId
+              index={index} // Passando o índice da subtask
             />
           ))}
         </div>
