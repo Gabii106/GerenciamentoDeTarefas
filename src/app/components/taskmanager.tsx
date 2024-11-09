@@ -17,9 +17,10 @@ interface TaskType {
 // Interface para as props do TaskManager
 interface TaskManagerProps {
   tasks: TaskType[];
+  fetchTasks: () => void;
 }
 
-export default function TaskManager({ tasks }: TaskManagerProps) {
+export default function TaskManager({ tasks, fetchTasks }: TaskManagerProps) {
   return (
     <div className="w-full max-w-lg p-4">
       {tasks.map((task) => (
@@ -28,6 +29,7 @@ export default function TaskManager({ tasks }: TaskManagerProps) {
           title={task.title}
           taskId={task.taskId}
           subtasks={task.subtasks}
+          fetchTasks={fetchTasks}
         />
       ))}
     </div>

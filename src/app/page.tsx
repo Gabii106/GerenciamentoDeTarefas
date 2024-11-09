@@ -79,7 +79,7 @@ export default function Home() {
     <div className="min-h-screen bg-gray-100 flex flex-col">
       <Navbar openForm={() => setIsFormOpen(true)} />
       <main className="flex flex-col items-center py-4">
-        <TaskManager tasks={tasks} />
+        <TaskManager tasks={tasks} fetchTasks={fetchTasks} />
       </main>
       {isFormOpen && (
         <TaskForm 
