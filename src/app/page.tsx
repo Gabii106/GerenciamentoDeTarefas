@@ -54,15 +54,16 @@ export default function Home() {
 
   const addTask = async (title: string, subtasks: string[]) => {
     try {
+      if (!user) return; // Verifica se o usuário está logado
+  
       const newTask = {
         title,
-        subtasks: subtasks.map(label => ({ label, isChecked: false })),
+        subtasks: subtasks.map((label) => ({ label, isChecked: false })),
+        userId: user.uid, // Armazena o ID do usuário logado
       };
+  
       const taskDoc = await addDoc(collection(firestore, "tasks"), newTask);
-      setTasks((prevTasks) => [
-        ...prevTasks, 
-        { ...newTask, taskId: taskDoc.id }
-      ]);
+      setTasks((prevTasks) => [...prevTasks, { ...newTask, taskId: taskDoc.id }]);
     } catch (error) {
       console.error("Erro ao adicionar nova tarefa:", error);
     }
