@@ -4,12 +4,12 @@ import { getFirestore } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDSS8ZVUPeoiGXTdOMdjdYaDHZ9YoqS9TI",
-  authDomain: "gerenciamentodetarefas-b1812.firebaseapp.com",
-  projectId: "gerenciamentodetarefas-b1812",
-  storageBucket: "gerenciamentodetarefas-b1812.firebasestorage.app",
-  messagingSenderId: "32955577094",
-  appId: "1:32955577094:web:8ba8a37a9bbe2fd853a487",
+  apiKey: "AIzaSyBSC4gZVAOhMMuqATIo4-0IxjtNH7Z53Hs",
+  authDomain: "gerenciador-de-taferas.firebaseapp.com",
+  projectId: "gerenciador-de-taferas",
+  storageBucket: "gerenciador-de-taferas.firebasestorage.app",
+  messagingSenderId: "913726879355",
+  appId: "1:913726879355:web:432222359d1f7108c3d4de",
 };
 
 const app = initializeApp(firebaseConfig);
